@@ -1,5 +1,5 @@
 # PHP Cryptography class
-## This class is in development
+## Encypted/Decypted text/string
 
 ## Feature
 

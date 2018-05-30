@@ -1,69 +1,48 @@
 <?php 
 class Cryptography{      
 
-	private static $key;
+	private static $secret_key = 'gsdgsg423b523b5432bjbjm24vbjn2hv';
 
-	private static $cipher = "aes-128-gcm";	
-	
-	public function __construct(){
+	private static $cipher = "AES-128-CBC";	
+	const CIPHER_16 = 'AES-128-CBC';
+    const CIPHER_32 = 'AES-256-CBC';
 
-		Cryptography::$key = openssl_random_pseudo_bytes(32);
+	public function encrypt($str,$cl=32){
+		return static::encyptedDecypted('encrypt',$str,$cl);
+	}
+	public function decrypt($str,$cl=32){
+		return static::encyptedDecypted('decrypt',$str,$cl);
+	}	
+	public function encyptedDecypted($action,$str,$cl){
 
+		$cl = (int) $cl;
+
+		if($cl === 16){
+			$cipher = static::CIPHER_16;
+			$length = 16;
+		}elseif($cl === 32){
+			$cipher = static::CIPHER_32;
+			$length = 32;
+		}else{
+			throw new Exception("Error Processing Request", 1);
+			
+		}
+		$iv =  $iv = substr(hash('sha256',static:: $secret_key), 0, 16);
+		$key = hash('sha512', static::$secret_key);
+	    if ( $action == 'encrypt' ) {
+	        $output = openssl_encrypt($str, $cipher, $key, 0, $iv);
+	        $output = base64_encode($output);
+	        $output = static::securesalts($length).$output.static::securesalts($length);
+	    } else if( $action == 'decrypt' ) {
+	    	$str = $text = substr($str, $length, -$length);
+	        $output = openssl_decrypt(base64_decode($str), $cipher, $key, 0, $iv);
+	    }
+	    return $output;
 	}
 
-	public static function Encypted($plain_txt){
-
-	if (in_array(Cryptography::$cipher,openssl_get_cipher_methods())){
-
-		$ciphertext = false;
-
-		$key = Cryptography::$key;
-
-		$cipher = Cryptography::$cipher;
-
-    	$ivlen = openssl_cipher_iv_length($cipher);
-
-    	$iv = openssl_random_pseudo_bytes($ivlen);
-
-    		$ciphertext .= openssl_encrypt($plain_txt, $cipher, $key, $options=0, $iv,$tag);
-
-    	$array =  [
-    		'text' => Cryptography::Custom(16).$ciphertext.Cryptography::Custom(16),
-    		'key' => $key,
-     		'cipher' => $cipher,
-    		'iv' => $iv,   	
-    		'tag' => $tag,	
-    	];
-    	return $array;
-	}
-
-	}
-	public static function Decrypt($params) {
-
-    	if(is_array($params)){
-
-    		$data = $params;
-
-    		$text = substr($data['text'], 16, -16);
-
-    		$decrypted_txt = openssl_decrypt($text, $data['cipher'], $data['key'], 0 , $data['iv'],$data['tag']);
-
-    		return $decrypted_txt;
-
-    	}else{
-
-    		return false;
-
-    	}
-
-     }	
-
-	private static function Custom($length){
-
+	private static function securesalts($length){
 		if(is_int($length) && $length >= 5){
-
 			$chars =  array_merge(range(0,9), range('a', 'z'),range('A', 'Z'));
-
 			$stringlength = count( $chars  ); //Used Count because its array now
 			
 			$randomString = '';
@@ -75,12 +54,8 @@ class Cryptography{
 			}
 			
 			return $randomString;			
-
 		}else{
-
 			return false;
-
 		}
-
-	}
+	}	
 }
