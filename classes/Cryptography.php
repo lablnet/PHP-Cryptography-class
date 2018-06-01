@@ -2,8 +2,6 @@
 class Cryptography{      
 
 	private static $secret_key = 'gsdgsg423b523b5432bjbjm24vbjn2hv';
-
-	private static $cipher = "AES-128-CBC";	
 	const CIPHER_16 = 'AES-128-CBC';
     const CIPHER_32 = 'AES-256-CBC';
 
