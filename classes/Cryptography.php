@@ -11,7 +11,7 @@ class Cryptography{
 	public static function decrypt($str,$cl=32){
 		return static::encyptedDecypted('decrypt',$str,$cl);
 	}	
-	public function encyptedDecypted($action,$str,$cl){
+	public static function encyptedDecypted($action,$str,$cl){
 
 		$cl = (int) $cl;
 
