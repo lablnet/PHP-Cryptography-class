@@ -5,10 +5,10 @@ class Cryptography{
 	const CIPHER_16 = 'AES-128-CBC';
     const CIPHER_32 = 'AES-256-CBC';
 
-	public function encrypt($str,$cl=32){
+	public static function encrypt($str,$cl=32){
 		return static::encyptedDecypted('encrypt',$str,$cl);
 	}
-	public function decrypt($str,$cl=32){
+	public static function decrypt($str,$cl=32){
 		return static::encyptedDecypted('decrypt',$str,$cl);
 	}	
 	public function encyptedDecypted($action,$str,$cl){
@@ -37,20 +37,14 @@ class Cryptography{
 	    }
 	    return $output;
 	}
-
 	private static function securesalts($length){
 		if(is_int($length) && $length >= 5){
 			$chars =  array_merge(range(0,9), range('a', 'z'),range('A', 'Z'));
 			$stringlength = count( $chars  ); //Used Count because its array now
-			
 			$randomString = '';
-			
 			for ( $i = 0; $i < $length; $i++ ) {
-				
-				$randomString .= $chars[rand( 0, $stringlength - 1 )];
-				
-			}
-			
+				$randomString .= $chars[rand( 0, $stringlength - 1 )];				
+			}			
 			return $randomString;			
 		}else{
 			return false;
